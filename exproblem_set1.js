@@ -1,3 +1,6 @@
+// Google Apps ScriptのURL
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDquoLIyQ5ENtXnOnoK-K0WS_hnf-eJJ_-FAnzkoc_2NrKvS58Yn-JrBiIYLeOfaY/exec';
+
 const total = 20;
 let current = 1;
 const TOTAL_TIME = 30 * 60; // 30分（秒）
@@ -395,3 +398,86 @@ window.onload = () => {
     };
   }
 };
+function submitExam() {
+    if (examSubmitted) {
+        alert("試験は既に提出されています。");
+        return;
+    }
+
+    const confirmation = confirm("試験を終了しますか？");
+    if (!confirmation) return;
+
+    examSubmitted = true;
+    clearInterval(timerInterval);
+
+    let correctCount = 0;
+    const results = []; // 各問題の正誤結果を格納
+
+    problems.forEach((problem, index) => {
+        const userAnswer = document.getElementById(`answer-${index}`).value.trim();
+        const resultElement = document.getElementById(`result-${index}`);
+        
+        const isCorrect = evaluateAnswer(userAnswer, problem.answer);
+        
+        // "正解" または "不正解" を配列に追加
+        results.push(isCorrect ? "正解" : "不正解");
+
+        if (isCorrect) {
+            correctCount++;
+            resultElement.textContent = "⭕ 正解";
+            resultElement.className = "result correct";
+        } else {
+            resultElement.textContent = `❌ 不正解（正解: ${problem.answer}）`;
+            resultElement.className = "result incorrect";
+        }
+        resultElement.style.display = "block";
+    });
+
+    const score = correctCount * 5;
+    document.getElementById("final-score").textContent = 
+        `正解数: ${correctCount} / ${problems.length}（得点: ${score}点）`;
+
+    // Google Apps Scriptにデータ送信（初回のみ）
+    sendToGoogleSheets(results, score);
+}
+
+// Google Sheetsにデータを送信する関数
+async function sendToGoogleSheets(results, score) {
+    // 既に送信済みかチェック
+    const storageKey = 'texam_set1_submitted';
+    if (localStorage.getItem(storageKey) === 'true') {
+        console.log('既に送信済みです');
+        return;
+    }
+    
+    const data = {
+        results: results, // 20問分の "正解"/"不正解" の配列
+        score: score      // 合計スコア
+    };
+    
+    try {
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors', // CORSエラーを回避
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        // no-corsモードでは結果を確認できないため、送信成功とみなす
+        localStorage.setItem(storageKey, 'true');
+        console.log('データ送信完了');
+        
+    } catch (error) {
+        console.error('送信エラー:', error);
+        // エラーが出ても一応送信済みフラグを立てる（多重送信防止）
+        localStorage.setItem(storageKey, 'true');
+    }
+}
+
+// リセット用関数（デバッグ用 - コンソールから実行可能）
+function resetSubmissionFlag() {
+    localStorage.removeItem('texam_set1_submitted');
+    console.log('送信フラグをリセットしました');
+}
