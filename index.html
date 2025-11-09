@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TExAM</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: #f6f8fb;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 24px;
+      font-size: 1.8em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    button {
+      background-color: #5da3fa;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+
+.modal-content {
+    background: #fff;
+    border: 3px solid #5da3fa;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    max-width: 400px;
+    width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 24px 14px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    wigth: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #888;
+    cursor: pointer;
+    z-index: 20;
+    padding: 0;
+  }
+  .close-btn:hover { color: #333; }
+    
+    button:hover {
+      background-color: #3c84e6;
+    }
+
+    .help-btn {
+    position: absolute;
+    top: 16px; right: 16px; z-index: 2;
+    width: 32px; height: 32px;
+    border-radius: 50%; background: #5da3fa; color: #fff;
+    border: none; font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+    box-sizing: border-box;
+  }
+    .help-btn:hover { background: #3c84e6; }
+    .modal {
+      display: none; position: fixed; z-index: 10; left: 0; top: 0;
+      width: 100vw; height: 100vh; background: rgba(0,0,0,0.3);
+      justify-content: center; align-items: center;
+    }
+    .modal.show { display: flex; }
+    .close-btn {
+      position: absolute; top: 8px; right: 12px;
+      background: none; border: none; font-size: 1.3em;
+      color: #888; cursor: pointer;
+    }
+.howto-img {
+  width: 100%;
+  max-width: 350px;
+  aspect-ratio: 1 / 1;
+  border: 2px solid #333;
+  background: #fff;
+  border-radius: 8px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+    .slide-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+  }
+
+  .slide-btn {
+    background: #5da3fa;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    font-size: 1.4em;
+    cursor: pointer;
+    margin: 0 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+  }
+
+  .slide-btn:hover:not(:disabled) {
+    background: #3c84e6;
+  }
+    .indicator { display: flex; gap: 6px; margin: 8px 0; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #d3d3d3; }
+    .dot.active { background: #5da3fa; }
+    .slide-desc { margin-bottom: 10px; min-height: 40px; text-align: left; }
+  </style>
+</head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VEGH85WJ87"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VEGH85WJ87');
+</script>
+  
+<body>
+  <div class="container">
+    <h1>TExAM</h1>
+    <input type="text" id="name" placeholder="名前を入力"><br>
+    <select id="set">
+      <option value="謎検模試_M">謎検模試_M</option>
+      <option value="謎検模試_MII">謎検模試_MⅡ</option>
+      <!-- 他のセットもここに追加できます -->
+    </select><br>
+    <button onclick="start()">決定</button>
+</button>
+    <button class="help-btn" onclick="openHelp()">？</button>
+    <div id="modalHelp" class="modal">
+  <div class="modal-content">
+    <h2 style="margin-top:0;">使い方</h2>
+    <div class="slide-nav">
+      <button id="prevBtn" class="slide-btn">&lt;</button>
+      <div class="indicator" id="indicator"></div>
+      <button id="nextBtn" class="slide-btn">&gt;</button>
+    </div>
+    <img id="howtoImg" src="" alt="使い方画像" class="howto-img">
+    <div class="slide-desc" id="slideDesc"></div>
+  </div>
+</div>
+  <script src="index.js"></script>
+</body>
+</html>

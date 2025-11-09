@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>結果</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: #f6f8fb;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 16px;
+      color: #444;
+    }
+
+    .result-info {
+      margin-bottom: 20px;
+    }
+
+    .message {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+
+    .share-link {
+      display: block;
+      margin-top: 20px;
+      background-color: #5da3fa;
+      color: white;
+      padding: 10px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .share-link:hover {
+      background-color: #3c84e6;
+    }
+
+    .ranking {
+      margin-top: 30px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>お疲れ様でした！</h2>
+    <div class="result-info">
+      <p>あなたは「<span id="set-name"></span>」セットをクリアしました！</p>
+      <p>タイム：<span id="time"></span></p>
+      <p>パス回数：<span id="passes"></span></p>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <a href="#" id="share-link" class="share-link" target="_blank">
+      結果をポストする
+    </a>
+
+    <div class="ranking" id="ranking"></div>
+  </div>
+  <script src="result.js"></script>
+</body>
+</html>

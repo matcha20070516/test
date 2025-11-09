@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TExAM</title>
+  <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: sans-serif;
+    background: #f0f0f0;
+  }
+
+  body {
+    display: flex;
+    justify-content: center; /* 横中央 */
+    align-items: center;     /* 縦中央 */
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 600px;
+    max-height: 80vh; /* 画面の8割までに制限 */
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto; /* ←中身だけスクロール！ */
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  p {
+    line-height: 1.6;
+    word-wrap: break-word;
+  }
+
+  button {
+    display: block;
+    margin: 24px auto 0;
+    padding: 12px 24px;
+    font-size: 16px;
+    background: #5da3fa;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #3c84e6;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>ルール</h1>
+    <p>・問題は全20問です。</p>
+    <p>・メモ用紙や筆記用具の使用を推奨しています。</p>
+    <p>・答えはすべてweblio辞書の<a href= "https://www.weblio.jp/cat/dictionary/sgkdj" target="_blank">デジタル大辞泉</a>に掲載されている言葉になります。</p>
+    <p>・ソースの閲覧は禁止です。</p>
+    <p>・制限時間は30分です。</p>
+    <p>・時間内に解き終えた場合は途中終了も可能です。</p>
+    <button onclick="startMockCountdown()">スタート</button>
+  </div>
+
+  <script>
+    function startMockCountdown() {
+      window.location.href = "excountdown.html";
+    }
+  </script>
+</body>
+</html>

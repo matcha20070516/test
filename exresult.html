@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TExAM</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: #f6f8fb;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 16px;
+      color: #444;
+    }
+
+    .result-info {
+      margin-bottom: 20px;
+    }
+
+    .result-info p {
+      font-size: 1.1em;
+      margin: 8px 0;
+    }
+
+    .share-link, .detail-link {
+      display: block;
+      margin: 12px auto;
+      background-color: #5da3fa;
+      color: white;
+      padding: 10px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      width: fit-content;
+    }
+
+    .share-link:hover, .detail-link:hover {
+      background-color: #3c84e6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>模試 結果発表</h2>
+    <div class="result-info">
+      <p>名前：<span id="username">---</span></p>
+      <p>模試名：<span id="setname">---</span></p>
+      <p>得点：<span id="score">0</span> 点</p>
+      <p>経過時間：<span id="elapsedTimeDisplay">--:--</span></p>
+    <a href="#" id="share-link" class="share-link" target="_blank">
+      結果をポストする
+    </a>
+
+    <a id="detail-link" class="detail-link" href="#">
+      解答詳細を見る
+    </a>
+      <div id="result-summary"></div>
+<div style="text-align:center; margin:16px 0;">
+  <button id="review-btn">問題を見返す</button>
+  <button id="home-btn">ホームに戻る</button>
+</div>
+  </div>
+  <script src="exresult.js"></script> 
+</body>
+</html>

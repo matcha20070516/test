@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TExAM</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+  h1 { text-align: center; }
+  #result-summary { font-weight: bold; margin-bottom: 20px; font-size: 1.2em; text-align:center; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 40px; }
+  th, td { border: 1px solid #666; padding: 8px; text-align: center; }
+  tr.correct { background-color: #d4edda; }
+  tr.incorrect { background-color: #f8d7da; }
+  #explanation { text-align: center; margin-top: 20px; }
+  #explanation a { font-weight: bold; font-size: 1.2em; color: #007acc; text-decoration: none; }
+  #explanation a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<h1>謎検模試 結果詳細</h1>
+<div id="username" style="margin-bottom: 10px; font-weight: bold;"></div>
+<div id="result-summary"></div>
+
+<table id="detail-table">
+  <thead>
+    <tr>
+      <th>問題番号</th>
+      <th>あなたの解答</th>
+      <th>正解</th>
+      <th>配点</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div style="text-align:center; margin-top:16px;">
+  <button id="back-to-result">結果に戻る</button>
+</div>
+  
+<section id="explanation">
+  <a href="https://note.com/preview/nb9bc3d08937a?prev_access_key=95b634ac903e45cb49d1a54f0fb2c0d5" target="_blank" rel="noopener noreferrer">解答・解説ページ</a>
+</section>
+
+<script src="exresult_detail_M.js"></script>
+
+</body>
+</html>

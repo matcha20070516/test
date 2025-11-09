@@ -1,0 +1,386 @@
+/* 基本スタイルはそのまま */
+body {
+  height: calc(var(--vh, 1vh) * 100);
+  margin: 0;
+  padding: 0;
+  font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background: #f6f8fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;  /* 基本フォントサイズ */
+}
+
+.container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+#home-btn {
+  position: fixed;
+  top: 10px;        /* 上からの余白 */
+  right: 10px;      /* 右からの余白 */
+  font-size: 30px;  /* アイコンの大きさ */
+  color: gray;      /* 初期色を灰色に固定 */
+  text-decoration: none; /* 下線消す */
+  z-index: 1000;    /* 他より前に出す */
+}
+
+#home-btn:hover {
+  color: black;     /* ホバーしたら黒に変化 */
+}
+
+/* フォントサイズ・余白微調整 */
+h1 {
+  font-size: 1.8em;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+input[type="text"], select {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+button {
+  margin-top: 20px;
+  background-color: #5da3fa;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #3c84e6;
+}
+
+/* チャプターボタン */
+.chapter-btn {
+  width: 50px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #eee;
+  cursor: pointer;
+  margin: 2px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+}
+
+/* 横スクロールのチャプター */
+.chapters {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 8px;
+  gap: 8px;
+}
+
+/* スクロールバーの見た目 */
+.chapters::-webkit-scrollbar {
+  height: 6px;
+}
+
+.chapters::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+
+/* ----------- レスポンシブ対応 ----------- */
+
+/* スマホ（～600px） */
+@media (max-width: 600px) {
+  body {
+    font-size: 18px;  /* 少し大きめに */
+  }
+
+  .container {
+    width: 95%;
+    padding: 20px;
+    max-width: none; /* 幅制限外す */
+  }
+
+  h1 {
+    font-size: 1.5em;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"], select {
+    font-size: 1.1em;
+  }
+
+  button {
+    font-size: 1.1em;
+    padding: 14px 28px;
+  }
+
+  .chapter-btn {
+    width: 44px;
+    height: 28px;
+    font-size: 14px;
+  }
+}
+
+/* タブレット（601px～1024px） */
+@media (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 20px;
+  }
+
+  .container {
+    width: 80%;
+    max-width: 600px;
+    padding: 30px;
+  }
+
+  h1 {
+    font-size: 1.7em;
+    margin-bottom: 24px;
+  }
+
+  input[type="text"], select {
+    font-size: 1.2em;
+  }
+
+  button {
+    font-size: 1.2em;
+    padding: 16px 32px;
+  }
+
+  .chapter-btn {
+    width: 48px;
+    height: 30px;
+    font-size: 15px;
+  }
+}
+
+/* PC（1025px～） */
+@media (min-width: 1025px) {
+  body {
+    font-size: 22px;
+  }
+
+  .container {
+    width: 70%;
+    max-width: 700px;
+    padding: 40px 60px;
+  }
+
+  h1 {
+    font-size: 2em;
+    margin-bottom: 32px;
+  }
+
+  input[type="text"], select {
+    font-size: 1.3em;
+  }
+
+  button {
+    font-size: 1.3em;
+    padding: 18px 36px;
+  }
+
+  .chapter-btn {
+    width: 50px;
+    height: 32px;
+    font-size: 16px;
+  }
+}
+
+#confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#confirm-dialog {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+#confirm-dialog button {
+  margin: 8px;
+  padding: 8px 16px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+tr.correct {
+  background-color: #d4edda; /* 薄い緑 */
+}
+tr.incorrect {
+  background-color: #f8d7da; /* 薄い赤 */
+}
+
+.answer-container input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+  margin-top: 12px;
+}
+
+.answer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+#answer-format {
+  color: #666;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.submit-btn {
+  padding: 8px 16px;
+  font-size: 1rem;
+}
+
+#quiz-img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+}
+
+/* ◁ 画像 ▷ を横並び＋中央揃え */
+.question-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: nowrap;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+#question-area {
+  width: 100%;
+  max-width: 300px;   /* ←好みで大きさ調整 */
+  aspect-ratio: 1 / 1;
+  border: 2px solid #333;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ◁▷ ボタン */
+.nav-btn {
+  font-size: 2em;
+  color: #5da3fa;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 解答エリアを中央＆縦積みに */
+.answer-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.answer-area input[type="text"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.submit-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  max-width: 80vw;      /* 画面幅の90%まで広げる */
+  max-height: 80vh;     /* 画面高の90%まで広げる */
+  padding: 24px 32px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.howto-img {
+  width: 100%;          /* 親要素の幅に合わせる */
+  max-width: 180px;     /* 最大幅を180pxとか小さめに！ */
+  aspect-ratio: 1 / 1;
+  border: 2px solid #333;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+
+/* 拡大モーダルのスタイル */
+#imageModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+#imageModal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
