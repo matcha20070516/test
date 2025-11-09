@@ -216,8 +216,13 @@ const saveCurrentAnswer = () => {
 };
 
 const calculateScore = (userAnswers) => {
-  return userAnswers.reduce((score, ans, idx) =>
-    score + (ans === correctAnswers[idx] ? pointsPerQuestion[idx] : 0), 0);
+  let score = 0;
+  for (let i = 0; i < userAnswers.length; i++) {
+    if (userAnswers[i] === correctAnswers[i]) {
+      score += pointsPerQuestion[i];
+    }
+  }
+  return score;
 };
 
 // Google Sheetsにデータを送信する関数
