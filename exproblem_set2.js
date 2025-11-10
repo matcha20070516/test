@@ -170,7 +170,7 @@ const autoSaveState = () => {
 
 const loadQuestion = () => {
   document.getElementById("question-num").textContent = `第${current}問`;
-  document.getElementById("quiz-img").src = `mq${current}.PNG`;
+  document.getElementById("quiz-img").src = `mq2${current}.PNG`;
   document.getElementById("answer").value = answers[current - 1] || "";
 
   const formatSpan = document.getElementById("answer-format");
@@ -319,7 +319,7 @@ const handleExamEnd = (message) => {
 
   alert(message);
   
-  const shareUrl = `https://matcha20070516.github.io/mytestplaydate/share/grade-${grade.num}.html`;
+  const shareUrl = `https://matcha20070516.github.io/TExAM/share/grade-${grade.num}.html`;
   
   const params = new URLSearchParams({
     grade: grade.name,
