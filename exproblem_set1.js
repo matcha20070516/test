@@ -126,7 +126,7 @@ if (isFreshStart) {
   localStorage.removeItem("exStartTime");
   localStorage.removeItem("exAnswers");
   
-  // 新規開始時刻を記録
+   // 新規開始時刻を記録
   startTime = Date.now();
   localStorage.setItem("exStartTime", startTime);
 } else {
