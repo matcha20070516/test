@@ -4,7 +4,7 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDquoLIyQ5ENtXnOnoK-K0WS_hnf-eJJ_-FAnzkoc_2NrKvS58Yn-JrBiIYLeOfaY/exec';
 
 // Google Sheetsにデータを送信する関数
-async function sendToGoogleSheets(userAnswers, score, sheetName = "1") {
+async function sendToGoogleSheets(userAnswers, score, sheetName = "2") {
   // 既に送信済みかチェック
   const storageKey = `texam_${sheetName}_submitted`;
   if (localStorage.getItem(storageKey) === 'true') {
