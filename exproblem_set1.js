@@ -380,6 +380,8 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+sendToGoogleSheets(answers, score);
+
 window.onload = () => {
   if (isLocked()) {
     const lockNotice = document.createElement("p");
