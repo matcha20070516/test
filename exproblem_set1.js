@@ -381,7 +381,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-sendToGoogleSheets(answers, score);
+sendToGoogleSheets(answers, score, "1");
 
 window.onload = () => {
   if (isLocked()) {
