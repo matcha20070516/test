@@ -1,9 +1,9 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDquoLIyQ5ENtXnOnoK-K0WS_hnf-eJJ_-FAnzkoc_2NrKvS58Yn-JrBiIYLeOfaY/exec';
 
 // Google Sheetsにデータを送信する関数
-async function sendToGoogleSheets(userAnswers, score) {
+async function sendToGoogleSheets(userAnswers, score, sheetName = "1") {
   // 既に送信済みかチェック
-  const storageKey = 'texam_set1_submitted';
+  const storageKey = `texam_${sheetName}_submitted`;
   if (localStorage.getItem(storageKey) === 'true') {
     console.log('既に送信済みです');
     return;
@@ -15,8 +15,9 @@ async function sendToGoogleSheets(userAnswers, score) {
   );
   
   const data = {
-    results: results, // 20問分の "正解"/"不正解" の配列
-    score: score      // 合計スコア
+    sheetName: sheetName, // どのシートに保存するか
+    results: results,     // 20問分の "正解"/"不正解" の配列
+    score: score          // 合計スコア
   };
   
   try {
@@ -31,7 +32,7 @@ async function sendToGoogleSheets(userAnswers, score) {
     
     // no-corsモードでは結果を確認できないため、送信成功とみなす
     localStorage.setItem(storageKey, 'true');
-    console.log('データ送信完了');
+    console.log(`データ送信完了: ${sheetName}`);
     
   } catch (error) {
     console.error('送信エラー:', error);
@@ -41,9 +42,9 @@ async function sendToGoogleSheets(userAnswers, score) {
 }
 
 // リセット用関数（デバッグ用 - コンソールから実行可能）
-function resetSubmissionFlag() {
-  localStorage.removeItem('texam_set1_submitted');
-  console.log('送信フラグをリセットしました');
+function resetSubmissionFlag(sheetName = "模試M") {
+  localStorage.removeItem(`texam_${sheetName}_submitted`);
+  console.log(`送信フラグをリセットしました: ${sheetName}`);
 }
 
 const total = 20;
