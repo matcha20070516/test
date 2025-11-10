@@ -49,7 +49,7 @@ function resetSubmissionFlag(sheetName = "1") {
   localStorage.removeItem(`texam_${sheetName}_submitted`);
   console.log(`送信フラグをリセットしました: ${sheetName}`);
 }
-sendToGoogleSheets(answers, score, "1");
+
 // ============================================================
 // Google Apps Script連携機能（ここまで）
 // ============================================================
@@ -386,6 +386,8 @@ document.addEventListener("keydown", (e) => {
     forward();
   }
 });
+
+sendToGoogleSheets(answers, score, "1");
 
 window.onload = () => {
   if (isLocked()) {
