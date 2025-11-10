@@ -131,7 +131,7 @@ if (isFreshStart) {
   localStorage.setItem("exStartTime", startTime);
 } else {
   // 保存された開始時刻を取得
-  startTime = parseInt(localStorage.getItem("exStartTime") || Date.now());
+  startTime = parseInt(localStorage.getItem("exStartTime")) || Date.now();
   
   const savedCurrent = parseInt(localStorage.getItem("exCurrent") || "1", 10);
   current = savedCurrent;
