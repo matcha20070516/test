@@ -1,9 +1,102 @@
-// ページ読み込み時に受験済みチェックマークを表示
+// ============================================================
+// Google Apps Script連携機能（ここから）
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDquoLIyQ5ENtXnOnoK-K0WS_hnf-eJJ_-FAnzkoc_2NrKvS58Yn-JrBiIYLeOfaY/exec';
+
+// 模試ごとの正解データ
+const EXAM_CORRECT_ANSWERS = {
+  "謎検模試_M": [
+    "3", "たにそこ", "はんたい", "おろそか", "こまいぬ",
+    "ちくせき", "ユニオン", "ホエール", "はんらん", "がんばん",
+    "たつじん", "とのさま", "かけごえ", "てきかく", "ドリーム",
+    "みさんが", "ながさき", "いせえび", "はだいろ", "かいどく"
+  ],
+  "謎検模試_MII": [
+    "ぐうたら", "ごうこく", "すうしき", "こうつうひ", "もんばん",
+    "はかい", "めのう", "ふはつ", "こたつ", "ゴルフ",
+    "エデン", "2", "4", "カウント", "めんどり",
+    "うせつ", "ハウス", "かいひ", "まるた", "くせ"
+  ] // 後で追加
+};
+
+// Google Sheetsにデータを送信する関数
+async function sendToGoogleSheets(userAnswers, score, sheetName) {
+  const storageKey = `texam_${sheetName}_submitted`;
+  if (localStorage.getItem(storageKey) === 'true') {
+    console.log(`既に送信済みです: ${sheetName}`);
+    return;
+  }
+  
+  const correctAnswers = EXAM_CORRECT_ANSWERS[sheetName];
+  if (!correctAnswers || correctAnswers.length === 0) {
+    console.log(`正解データがありません: ${sheetName}`);
+    return;
+  }
+  
+  // 各問題の正誤を判定
+  const results = userAnswers.map((ans, idx) => 
+    ans === correctAnswers[idx] ? "正解" : "不正解"
+  );
+  
+  const data = {
+    sheetName: sheetName,
+    results: results,
+    score: score
+  };
+  
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    });
+    
+    localStorage.setItem(storageKey, 'true');
+    console.log(`データ送信完了: ${sheetName}`);
+    
+  } catch (error) {
+    console.error('送信エラー:', error);
+    localStorage.setItem(storageKey, 'true');
+  }
+}
+
+// 過去データの自動送信をチェック
+function checkAndSubmitPastData() {
+  // 全ての模試セットをチェック
+  Object.keys(EXAM_CORRECT_ANSWERS).forEach(setName => {
+    const isLocked = localStorage.getItem("exResultLocked") === "true" ||
+                     localStorage.getItem(`ex_${setName}_ResultLocked`) === "true";
+    const isCompleted = localStorage.getItem(`${setName}_completed`) === "true";
+    const alreadySubmitted = localStorage.getItem(`texam_${setName}_submitted`) === "true";
+    
+    if ((isLocked || isCompleted) && !alreadySubmitted) {
+      const savedAnswers = JSON.parse(localStorage.getItem("exAnswers") || "[]");
+      const savedScore = parseInt(localStorage.getItem("exScore") || "0");
+      
+      if (savedAnswers.length === 20 && savedScore >= 0) {
+        console.log(`過去のデータを自動送信: ${setName}`);
+        sendToGoogleSheets(savedAnswers, savedScore, setName);
+      }
+    }
+  });
+}
+// ============================================================
+// Google Apps Script連携機能（ここまで）
+// ============================================================
+
+
+// ページ読み込み時に受験済みチェックマークを表示 & 過去データ送信
 window.addEventListener('DOMContentLoaded', () => {
   updateExamStatus();
   adjustViewportHeight();
   initSlider();
   initModalClose();
+  
+  // 過去データの自動送信をチェック
+  checkAndSubmitPastData();
 });
 
 // 受験済みステータスを更新
