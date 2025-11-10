@@ -49,6 +49,7 @@ function resetSubmissionFlag(sheetName = "1") {
   localStorage.removeItem(`texam_${sheetName}_submitted`);
   console.log(`送信フラグをリセットしました: ${sheetName}`);
 }
+sendToGoogleSheets(answers, score, "1");
 // ============================================================
 // Google Apps Script連携機能（ここまで）
 // ============================================================
@@ -82,7 +83,13 @@ const answerFormats = [
 
 let timerInterval = null;
 
-const isLocked = () => localStorage.getItem("exResultLocked") === "true";
+// 追加: このセット専用の識別子
+const EXAM_SET_ID = "謎検模試_M";
+
+const isLocked = () => {
+  const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+  return localStorage.getItem(SET_KEY + "ResultLocked") === "true";
+};
 
 const isValidFormat = (answer, format) => {
   if (!answer || answer.trim() === "") return true;
@@ -118,25 +125,32 @@ const getGrade = (score) => {
   return { name: "8級", num: 10 };
 };
 
-// 新規スタート判定
-const isFreshStart = localStorage.getItem("exFreshStart") === "true";
+// 新規スタート判定（セット専用のキーを使用）
+const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+const isFreshStart = localStorage.getItem(SET_KEY + "FreshStart") === "true" ||
+                     localStorage.getItem("exFreshStart") === "true";
 if (isFreshStart) {
+  localStorage.removeItem(SET_KEY + "FreshStart");
   localStorage.removeItem("exFreshStart");
-  localStorage.removeItem("exCurrent");
-  localStorage.removeItem("exStartTime");
-  localStorage.removeItem("exAnswers");
+  localStorage.removeItem(SET_KEY + "Current");
+  localStorage.removeItem(SET_KEY + "StartTime");
+  localStorage.removeItem(SET_KEY + "Answers");
   
-   // 新規開始時刻を記録
+  // 新規開始時刻を記録
   startTime = Date.now();
-  localStorage.setItem("exStartTime", startTime);
+  localStorage.setItem(SET_KEY + "StartTime", startTime);
 } else {
-  // 保存された開始時刻を取得
-  startTime = parseInt(localStorage.getItem("exStartTime")) || Date.now();
+  // 保存された開始時刻を取得（セット専用のキーから）
+  const savedTime = localStorage.getItem(SET_KEY + "StartTime");
+  startTime = savedTime ? parseInt(savedTime, 10) : Date.now();
+  if (!savedTime) {
+    localStorage.setItem(SET_KEY + "StartTime", startTime);
+  }
   
-  const savedCurrent = parseInt(localStorage.getItem("exCurrent") || "1", 10);
+  const savedCurrent = parseInt(localStorage.getItem(SET_KEY + "Current") || "1", 10);
   current = savedCurrent;
 
-  const savedAnswers = JSON.parse(localStorage.getItem("exAnswers") || "[]");
+  const savedAnswers = JSON.parse(localStorage.getItem(SET_KEY + "Answers") || "[]");
   for (let i = 0; i < savedAnswers.length; i++) {
     answers[i] = savedAnswers[i] || "";
   }
@@ -159,13 +173,15 @@ const updateTimer = () => {
   document.getElementById("timer").textContent =
     `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   
-  // 経過時間を保存（結果画面用）
-  localStorage.setItem("exElapsedTime", elapsedSec);
+  // 経過時間を保存（結果画面用 - セット専用のキーで保存）
+  const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+  localStorage.setItem(SET_KEY + "ElapsedTime", elapsedSec);
 };
 
 const autoSaveState = () => {
-  localStorage.setItem("exAnswers", JSON.stringify(answers));
-  localStorage.setItem("exCurrent", current.toString());
+  const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+  localStorage.setItem(SET_KEY + "Answers", JSON.stringify(answers));
+  localStorage.setItem(SET_KEY + "Current", current.toString());
 };
 
 const loadQuestion = () => {
@@ -173,14 +189,13 @@ const loadQuestion = () => {
   document.getElementById("quiz-img").src = `mq${current}.PNG`;
   document.getElementById("answer").value = answers[current - 1] || "";
 
-  const formatSpan = document.getElementById("answer-format");
-  formatSpan.textContent = answerFormats[current - 1] || "";
-
-  // 配点を表示
   const pointSpan = document.getElementById("question-point");
   if (pointSpan) {
-    pointSpan.textContent = `${pointsPerQuestion[current - 1]}点`;
+    pointSpan.textContent = pointsPerQuestion[current - 1] + "点";
   }
+  
+  const formatSpan = document.getElementById("answer-format");
+  formatSpan.textContent = answerFormats[current - 1] || "";
 
   document.getElementById("answer").disabled = isLocked();
 
@@ -243,7 +258,8 @@ const updateChapters = () => {
     btn.onclick = () => {
       saveCurrentAnswer();
       current = i + 1;
-      localStorage.setItem("exCurrent", current.toString());
+      const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+      localStorage.setItem(SET_KEY + "Current", current.toString());
       loadQuestion();
     };
     chapterContainer.appendChild(btn);
@@ -254,7 +270,8 @@ const back = () => {
   saveCurrentAnswer();
   if (current > 1) {
     current--;
-    localStorage.setItem("exCurrent", current.toString());
+    const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+    localStorage.setItem(SET_KEY + "Current", current.toString());
     loadQuestion();
   }
 };
@@ -263,7 +280,8 @@ const forward = () => {
   saveCurrentAnswer();
   if (current < total) {
     current++;
-    localStorage.setItem("exCurrent", current.toString());
+    const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+    localStorage.setItem(SET_KEY + "Current", current.toString());
     loadQuestion();
   }
 };
@@ -280,20 +298,26 @@ const calculateScore = (userAnswers) => {
 const handleExamEnd = (message) => {
   saveCurrentAnswer();
 
+  // 修正: 新形式からも名前を取得できるようにする
   const username =
     document.getElementById("username-input")?.value ||
+    localStorage.getItem("ex_" + EXAM_SET_ID + "_Username") ||
     localStorage.getItem("exUsername") ||
     "名無し";
 
-  const setName = "謎検模試_M";
+  const setName = EXAM_SET_ID;
   const score = calculateScore(answers);
   const grade = getGrade(score);
 
-  // ============================================================
-  // Google Sheetsにデータを送信（初回のみ）
-  sendToGoogleSheets(answers, score, "1");
-  // ============================================================
+  // 修正: 結果ページ用に新形式でも保存
+  localStorage.setItem("currentExamSet", EXAM_SET_ID);
+  localStorage.setItem("ex_" + EXAM_SET_ID + "_Username", username);
+  localStorage.setItem("ex_" + EXAM_SET_ID + "_Score", score);
+  localStorage.setItem("ex_" + EXAM_SET_ID + "_Answers", JSON.stringify(answers));
+  localStorage.setItem("ex_" + EXAM_SET_ID + "_SetName", setName);
+  localStorage.setItem("ex_" + EXAM_SET_ID + "_ResultLocked", "true");
 
+  // 旧形式（互換性のため残す）
   localStorage.setItem("exUsername", username);
   localStorage.setItem("exScore", score);
   localStorage.setItem("exAnswers", JSON.stringify(answers));
@@ -303,7 +327,8 @@ const handleExamEnd = (message) => {
   // 受験済みフラグを保存
   localStorage.setItem(`${setName}_completed`, "true");
 
-  localStorage.removeItem("exCurrent");
+  const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+  localStorage.removeItem(SET_KEY + "Current");
 
   const reviewMode = localStorage.getItem("exReviewMode") === "true";
   if (reviewMode) {
@@ -319,7 +344,7 @@ const handleExamEnd = (message) => {
 
   alert(message);
   
-  const shareUrl = `https://matcha20070516.github.io/mytestplaydate/share/grade-${grade.num}.html`;
+  const shareUrl = `https://matcha20070516.github.io/TExAM/share/grade-${grade.num}.html`;
   
   const params = new URLSearchParams({
     grade: grade.name,
@@ -367,9 +392,10 @@ window.onload = () => {
     const lockNotice = document.createElement("p");
     lockNotice.textContent = "この模試の結果は確定済みです。解答を変更できません。";
     lockNotice.style.color = "red";
-    document.querySelector(".quiz-area")?.prepend(lockNotice);
+    document.querySelector(".container")?.prepend(lockNotice);
 
-    const elapsed = parseInt(localStorage.getItem("exElapsedTime") || "0", 10);
+    const SET_KEY = "ex_" + EXAM_SET_ID + "_";
+    const elapsed = parseInt(localStorage.getItem(SET_KEY + "ElapsedTime") || "0", 10);
     const fixedTimeLeft = TOTAL_TIME - elapsed;
     const m = Math.floor(fixedTimeLeft / 60);
     const s = fixedTimeLeft % 60;
