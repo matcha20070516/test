@@ -1,13 +1,9 @@
-
-// ページ読み込み時に受験済みチェックマークを表示 & 過去データ送信
+// ページ読み込み時に受験済みチェックマークを表示
 window.addEventListener('DOMContentLoaded', () => {
   updateExamStatus();
   adjustViewportHeight();
   initSlider();
   initModalClose();
-  
-  // 過去データの自動送信をチェック
-  checkAndSubmitPastData();
 });
 
 // 受験済みステータスを更新
