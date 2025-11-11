@@ -403,7 +403,7 @@ window.onload = () => {
     if (submitBtn) submitBtn.onclick = finishExam;
     const overlay = document.getElementById("confirm-overlay");
     if (overlay) overlay.style.display = "none";
-  } else {と
+  } else {
     if (submitBtn) submitBtn.onclick = confirmAndFinish;
     if (confirmYes) confirmYes.onclick = finishExam;
     if (confirmNo) confirmNo.onclick = () => {
