@@ -3,55 +3,40 @@
 // ============================================================
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDquoLIyQ5ENtXnOnoK-K0WS_hnf-eJJ_-FAnzkoc_2NrKvS58Yn-JrBiIYLeOfaY/exec';
 
-// Google Sheetsにデータを送信する関数
-async function sendToGoogleSheets(userAnswers, score, sheetName = "2") {
-  // 既に送信済みかチェック
-  const storageKey = `texam_${sheetName}_submitted`;
-  if (localStorage.getItem(storageKey) === 'true') {
-    console.log('既に送信済みです');
+async function sendToGoogleSheets(answers, score, sheetName) {
+  // 送信済みチェック
+  const submittedKey = `${sheetName}_submitted`;
+  if (localStorage.getItem(submittedKey) === "true") {
+    console.log("送信済み");
     return;
   }
-  
-  // 各問題の正誤を判定
-  const results = userAnswers.map((ans, idx) => 
+
+  // 各問題の正誤判定
+  const results = answers.map((ans, idx) => 
     ans === correctAnswers[idx] ? "正解" : "不正解"
   );
-  
+
   const data = {
-    sheetName: sheetName, // どのシートに保存するか
-    results: results,     // 20問分の "正解"/"不正解" の配列
-    score: score          // 合計スコア
+    sheetName: sheetName,
+    results: results,
+    score: score
   };
-  
+
   try {
-    const response = await fetch(GAS_URL, {
+    await fetch(GAS_URL, {
       method: 'POST',
-      mode: 'no-cors', // CORSエラーを回避
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
     
-    // no-corsモードでは結果を確認できないため、送信成功とみなす
-    localStorage.setItem(storageKey, 'true');
-    console.log(`データ送信完了: ${sheetName}`);
-    
+    localStorage.setItem(submittedKey, "true");
+    console.log("✅ 送信完了:", sheetName);
   } catch (error) {
-    console.error('送信エラー:', error);
-    // エラーが出ても一応送信済みフラグを立てる（多重送信防止）
-    localStorage.setItem(storageKey, 'true');
+    console.error("❌ 送信エラー:", error);
   }
 }
 
-// リセット用関数（デバッグ用 - コンソールから実行可能）
-function resetSubmissionFlag(sheetName = "1") {
-  localStorage.removeItem(`texam_${sheetName}_submitted`);
-  console.log(`送信フラグをリセットしました: ${sheetName}`);
-}
-// ============================================================
-// Google Apps Script連携機能（ここまで）
-// ============================================================
 const total = 20;
 let current = 1;
 const TOTAL_TIME = 30 * 60; // 30分（秒）
@@ -299,6 +284,8 @@ const handleExamEnd = (message) => {
   localStorage.setItem("exAnswers", JSON.stringify(answers));
   localStorage.setItem("exSetName", setName);
   localStorage.setItem("exResultLocked", "true");
+
+  sendToGoogleSheets(answers, score, "謎検模試_MII");
   
   // 受験済みフラグを保存
   localStorage.setItem(`${setName}_completed`, "true");
