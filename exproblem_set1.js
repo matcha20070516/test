@@ -3,12 +3,9 @@
 // ============================================================
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDquoLIyQ5ENtXnOnoK-K0WS_hnf-eJJ_-FAnzkoc_2NrKvS58Yn-JrBiIYLeOfaY/exec';
 
-async function sendToGoogleSheets(answers, score) {
-  // setNameを取得（各ファイルで異なる）
-  const setName = "謎検模試_M"; // set1なら"謎検模試_M"、set2なら"謎検模試_MⅡ"
-  
+async function sendToGoogleSheets(answers, score, sheetName) {
   // 送信済みチェック
-  const submittedKey = `${setName}_submitted`;
+  const submittedKey = `${sheetName}_submitted`;
   if (localStorage.getItem(submittedKey) === "true") {
     console.log("送信済み");
     return;
@@ -20,7 +17,7 @@ async function sendToGoogleSheets(answers, score) {
   );
 
   const data = {
-    sheetName: setName,
+    sheetName: sheetName,
     results: results,
     score: score
   };
@@ -34,7 +31,7 @@ async function sendToGoogleSheets(answers, score) {
     });
     
     localStorage.setItem(submittedKey, "true");
-    console.log("✅ 送信完了");
+    console.log("✅ 送信完了:", sheetName);
   } catch (error) {
     console.error("❌ 送信エラー:", error);
   }
