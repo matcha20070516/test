@@ -274,10 +274,6 @@ const handleExamEnd = (message) => {
   const score = calculateScore(answers);
   const grade = getGrade(score);
 
-  // ============================================================
-  // Google Sheetsにデータを送信（初回のみ）
-  sendToGoogleSheets(answers, score, "2");
-  // ============================================================
 
   localStorage.setItem("exUsername", username);
   localStorage.setItem("exScore", score);
@@ -285,7 +281,11 @@ const handleExamEnd = (message) => {
   localStorage.setItem("exSetName", setName);
   localStorage.setItem("exResultLocked", "true");
 
+
+  
   sendToGoogleSheets(answers, score, "謎検模試_MII");
+
+
   
   // 受験済みフラグを保存
   localStorage.setItem(`${setName}_completed`, "true");
