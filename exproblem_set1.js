@@ -373,8 +373,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-sendToGoogleSheets(answers, score, "1");
-
 window.onload = () => {
   if (isLocked()) {
     const lockNotice = document.createElement("p");
